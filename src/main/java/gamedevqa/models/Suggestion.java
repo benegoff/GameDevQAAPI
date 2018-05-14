@@ -2,9 +2,14 @@ package gamedevqa.models;
 
 public class Suggestion {
     private int id;
-    private int gameId;
+    private Game game;
     private String description;
-    private String authorUsername;
+    private User suggestionAuthor;
+    
+    public void copy(Suggestion source) {
+    	setId(source.getId());
+    	setDescription(source.getDescription());
+    }
 
     public int getId() {
         return id;
@@ -14,12 +19,12 @@ public class Suggestion {
         this.id = id;
     }
 
-    public int getGameId() {
-        return gameId;
+    public Game getGame() {
+        return game;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public String getDescription() {
@@ -30,11 +35,11 @@ public class Suggestion {
         this.description = description;
     }
 
-    public String getAuthorUsername() {
-        return authorUsername;
+    public User getSuggestionAuthor() {
+        return suggestionAuthor;
     }
 
-    public void setAuthorUsername(String authorUsername) {
-        this.authorUsername = authorUsername;
+    public void setSuggestionAuthor(User suggestionAuthor) {
+        this.suggestionAuthor = suggestionAuthor;
     }
 }

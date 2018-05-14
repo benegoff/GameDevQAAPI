@@ -2,10 +2,10 @@ package gamedevqa.models;
 
 public class Bug {
     private int id;
-    private int gameId;
+    private Game game;
     private String description;
-    private int priorityId;
-    private String authorUsername;
+    private Priority priority;
+    private User author;
 
     public int getId() {
         return id;
@@ -15,12 +15,12 @@ public class Bug {
         this.id = id;
     }
 
-    public int getGameId() {
-        return gameId;
+    public Game getGame() {
+        return game;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public String getDescription() {
@@ -31,19 +31,25 @@ public class Bug {
         this.description = description;
     }
 
-    public int getPriorityId() {
-        return priorityId;
+    public Priority getPriority() {
+        return priority;
     }
 
-    public void setPriorityId(int priorityId) {
-        this.priorityId = priorityId;
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 
-    public String getAuthorUsername() {
-        return authorUsername;
+    public User getAuthor() {
+        return author;
     }
 
-    public void setAuthorUsername(String authorUsername) {
-        this.authorUsername = authorUsername;
+    public void setAuthor(User author) {
+        this.author = author;
+    }
+    
+    public void copy(Bug source) {
+    	setId(source.getId());
+    	setDescription(source.getDescription());
+    	setPriority(source.getPriority());
     }
 }

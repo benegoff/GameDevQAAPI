@@ -1,11 +1,67 @@
 package gamedevqa.models;
 
+import java.util.List;
+
 public class User {
-    private String username;
+	
+	private int id;
+	private String username;
     private String passwordHash;
-    private int roleId;
+    private Role role;
     private String profileImagePath;
     private String biography;
+    
+    private List<Game> games;
+    private List<Review> reviews;
+    private List<Suggestion> suggestions;
+    private List<Bug> authoredBugs;
+    
+    public void copy(User source) {
+    	setId(source.getId());
+    	setPasswordHash(source.getPasswordHash());
+    	setProfileImagePath(source.getProfileImagePath());
+    	setBiography(source.getBiography());
+    }
+    
+    public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public List<Suggestion> getSuggestions() {
+		return suggestions;
+	}
+
+	public void setSuggestions(List<Suggestion> suggestions) {
+		this.suggestions = suggestions;
+	}
+
+	public List<Bug> getAuthoredBugs() {
+		return authoredBugs;
+	}
+
+	public void setAuthoredBugs(List<Bug> authoredBugs) {
+		this.authoredBugs = authoredBugs;
+	}
+
+	public List<Game> getGames() {
+		return games;
+	}
+
+	public void setGames(List<Game> games) {
+		this.games = games;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 
     public String getUsername() {
         return username;
@@ -23,12 +79,12 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public int getRoleId() {
-        return roleId;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getProfileImagePath() {

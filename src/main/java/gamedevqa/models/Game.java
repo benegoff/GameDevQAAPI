@@ -1,13 +1,35 @@
 package gamedevqa.models;
 
+import java.util.List;
+
 public class Game {
     private int id;
-    private String creatorUsername;
+    private User creator;
     private String title;
     private String description;
-    private int genreId;
+    private Genre genre;
+    
+    private List<Bug> bugs;
+    private List<Suggestion> suggestions;
+    private List<Review> reviews;
+    private List<String> screenshotLinks;
+    
+    public void copy(Game source) {
+    	setId(source.getId());
+    	setTitle(source.getTitle());
+    	setDescription(source.getDescription());
+    	setGenre(source.getGenre());
+    }
 
-    public int getId() {
+    public List<String> getScreenshotLinks() {
+		return screenshotLinks;
+	}
+
+	public void setScreenshotLinks(List<String> screenshotLinks) {
+		this.screenshotLinks = screenshotLinks;
+	}
+
+	public int getId() {
         return id;
     }
 
@@ -15,12 +37,36 @@ public class Game {
         this.id = id;
     }
 
-    public String getCreatorUsername() {
-        return creatorUsername;
+    public List<Bug> getBugs() {
+		return bugs;
+	}
+
+	public void setBugs(List<Bug> bugs) {
+		this.bugs = bugs;
+	}
+
+	public List<Suggestion> getSuggestions() {
+		return suggestions;
+	}
+
+	public void setSuggestions(List<Suggestion> suggestions) {
+		this.suggestions = suggestions;
+	}
+
+	public List<Review> getReviews() {
+		return reviews;
+	}
+
+	public void setReviews(List<Review> reviews) {
+		this.reviews = reviews;
+	}
+
+	public User getCreator() {
+        return creator;
     }
 
-    public void setCreatorUsername(String creatorUsername) {
-        this.creatorUsername = creatorUsername;
+    public void setCreator(User creator) {
+        this.creator = creator;
     }
 
     public String getTitle() {
@@ -39,11 +85,11 @@ public class Game {
         this.description = description;
     }
 
-    public int getGenreId() {
-        return genreId;
+    public Genre getGenre() {
+        return genre;
     }
 
-    public void setGenreId(int genreId) {
-        this.genreId = genreId;
+    public void setGenre(Genre genre) {
+        this.genre = genre;
     }
 }

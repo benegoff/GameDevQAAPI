@@ -2,10 +2,16 @@ package gamedevqa.models;
 
 public class Review {
     private int id;
-    private int gameId;
+    private Game game;
     private double stars;
     private String description;
 
+    public void copy(Review source) {
+    	setId(source.getId());
+    	setStars(source.getStars());
+    	setDescription(source.getDescription());
+    }
+    
     public int getId() {
         return id;
     }
@@ -14,12 +20,12 @@ public class Review {
         this.id = id;
     }
 
-    public int getGameId() {
-        return gameId;
+    public Game getGame() {
+        return game;
     }
 
-    public void setGameId(int gameId) {
-        this.gameId = gameId;
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public double getStars() {
