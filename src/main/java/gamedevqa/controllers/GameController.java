@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import gamedevqa.models.Game;
-import gamedevqa.models.Genre;
 
 @RestController
 @RequestMapping("/games")
@@ -41,12 +40,12 @@ public class GameController {
 		return games.stream().filter(x -> x.getId() == id).findFirst().orElse(null);
 	}
 	
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Game> retrieveGameByGenre(@RequestBody Genre genre) {
-		return games.stream().filter(x -> x.getGenre().getId() == genre.getId()).collect(Collectors.toList());
+	@RequestMapping(path="/genre/{id}", method=RequestMethod.GET)
+	public List<Game> retrieveGameByGenre(@PathVariable Integer id) {
+		return games.stream().filter(x -> x.getGenre().getId() == id).collect(Collectors.toList());
 	}
 	
-	@RequestMapping(path="/genre", method=RequestMethod.GET)
+	@RequestMapping(method=RequestMethod.GET)
 	public List<Game> retrieveGames() {
 		return games;
 	}
