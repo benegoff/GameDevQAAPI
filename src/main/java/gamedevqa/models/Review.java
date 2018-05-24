@@ -1,16 +1,48 @@
 package gamedevqa.models;
 
-public class Review {
-    private int id;
-    private Game game;
-    private double stars;
-    private String description;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="REVIEWS")
+public class Review {
+	
+	@Id
+	@Column(name="review_id")
+	@GeneratedValue(strategy=GenerationType.AUTO)
+    private int id;
+	
+	@JoinColumn(name="game_id")
+	@ManyToOne
+    private Game game;
+	
+    private double stars;
+    
+    private String description;
+    
+    @JoinColumn(name="user_id")
+    @ManyToOne
+    private User author;
+    
     public void copy(Review source) {
     	setId(source.getId());
     	setStars(source.getStars());
     	setDescription(source.getDescription());
     }
+
+    public User getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(User author) {
+		this.author = author;
+	}
     
     public int getId() {
         return id;

@@ -3,6 +3,7 @@ package gamedevqa.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,11 +20,13 @@ public class UserController {
 	@Autowired
 	private UserJpaRepository userRepo;
 	
+	@Transactional
 	@RequestMapping(method=RequestMethod.POST)
 	public void addUser(@RequestBody User newUser) {
 		userRepo.saveAndFlush(newUser);
 	}
 	
+	@Transactional
 	@RequestMapping(method=RequestMethod.PUT)
 	public void updateUser(@RequestBody User user) {
 		User existingUser = userRepo.findById(user.getId()).orElse(null);
@@ -31,11 +34,13 @@ public class UserController {
 		userRepo.saveAndFlush(existingUser);
 	}
 	
+	@Transactional
 	@RequestMapping(path="/{id}", method=RequestMethod.DELETE)
 	public void deleteUser(@PathVariable int id) {
 		userRepo.deleteById(id);
 	}
 	
+	@Transactional
 	@RequestMapping(path="/{id}", method=RequestMethod.GET)
 	public User retrieveUser(@PathVariable int id) {
 		return userRepo.findById(id).orElse(null);

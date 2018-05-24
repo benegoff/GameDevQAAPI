@@ -2,16 +2,48 @@ package gamedevqa.models;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="GAMES")
 public class Game {
+	
+	@Id
+	@Column(name="game_id")
+	@GeneratedValue(strategy=GenerationType.AUTO)
     private int id;
+	
+	@JoinColumn(name="user_id")
+	@ManyToOne
     private User creator;
+    
     private String title;
+    
     private String description;
+    
+    @JoinColumn(name="genre_id")
+    @ManyToOne
     private Genre genre;
     
+    @OneToMany
     private List<Bug> bugs;
+    
+    @OneToMany
     private List<Suggestion> suggestions;
+    
+    @OneToMany
     private List<Review> reviews;
+    
+    @ElementCollection
     private List<String> screenshotLinks;
     
     public void copy(Game source) {

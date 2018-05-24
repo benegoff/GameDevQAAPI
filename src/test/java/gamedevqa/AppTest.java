@@ -4,6 +4,9 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.json.JSONException;
 import org.junit.Test;
 
@@ -12,7 +15,9 @@ import gamedevqa.models.Game;
 import gamedevqa.models.Review;
 import gamedevqa.models.Suggestion;
 import gamedevqa.models.User;
+import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.parsing.Parser;
 
 public class AppTest {
 	
@@ -58,7 +63,7 @@ public class AppTest {
 		    and().
 		        contentType(ContentType.JSON).
 		    and().
-		    	body("description", hasItems("Low", "Critical"));
+		    	body("description", hasItems("LOW", "CRITICAL"));
     }
 	
 	@Test
@@ -73,44 +78,15 @@ public class AppTest {
 		    and().
 		        contentType(ContentType.JSON).
 		    and().
-		    	body("description", is("Low"));
-    }
-	
-	@Test
-    public void test_WhenGettingRoles_ThenAllAreReturned() {
-		
-		given().
-	    when().
-	        get("http://localhost:8080/roles").
-	    then().
-	        assertThat().
-	        statusCode(200).
-		    and().
-		        contentType(ContentType.JSON).
-		    and().
-		    	body("name", hasItems("User", "Admin"));
-    }
-	
-	@Test
-    public void test_WhenGettingSpecificRole_ThenOnlyThatOneReturned() {
-		
-		given().
-	    when().
-	        get("http://localhost:8080/roles/1").
-	    then().
-	        assertThat().
-	        statusCode(200).
-		    and().
-		        contentType(ContentType.JSON).
-		    and().
-		    	body("name", is("User"));
+		    	body("description", is("LOW"));
     }
 	
 	@Test
     public void test_WhenAddingUser_ThenCanGetAddedUser() throws JSONException {
+		String username = "User1" + System.currentTimeMillis();
 		User user1 = new User();
 		user1.setId(1);
-		user1.setUsername("User1");
+		user1.setUsername(username);
 		user1.setPasswordHash("+3$+");
 		user1.setProfileImagePath("testPath.png");
 		user1.setBiography("Test Biography");
@@ -124,16 +100,22 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/users").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		user1.setId(id);
+		
 		given().
 	    when().
-	    	get("http://localhost:8080/users/1").
+	    	get("http://localhost:8080/users/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
 	        and().
 	        	contentType(ContentType.JSON).
 	        and().
-	    		body("username", is("User1")).
+	    		body("username", is(username)).
 	    	and().
 	    		body("passwordHash", is("+3$+")).
 	    	and().
@@ -158,9 +140,14 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/games").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		game1.setId(1);
+		
 		given().
 	    when().
-	    	get("http://localhost:8080/games/1").
+	    	get("http://localhost:8080/games/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -187,9 +174,15 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/bugs").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		bug1.setId(id);
+		
 		given().
 	    when().
-	    	get("http://localhost:8080/bugs/1").
+	    	get("http://localhost:8080/bugs/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -215,9 +208,15 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/reviews").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		review1.setId(id);
+		
 		given().
 	    when().
-	    	get("http://localhost:8080/reviews/1").
+	    	get("http://localhost:8080/reviews/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -244,9 +243,15 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/suggestions").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		suggestion1.setId(id);
+		
 		given().
 	    when().
-	    	get("http://localhost:8080/suggestions/1").
+	    	get("http://localhost:8080/suggestions/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -258,9 +263,10 @@ public class AppTest {
 	
 	@Test
     public void test_WhenUpdatingThenDeletingUser_ThenFieldIsUpdatedThenRemoved() throws JSONException {
+		String username = "User2" + System.currentTimeMillis();
 		User user1 = new User();
 		user1.setId(2);
-		user1.setUsername("User2");
+		user1.setUsername(username);
 		user1.setPasswordHash("+3$+2");
 		user1.setProfileImagePath("testPath2.png");
 		user1.setBiography("Test Biography 2");
@@ -274,6 +280,11 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/users").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		user1.setId(id);
 		user1.setBiography("Updated Biography");
 		
 		given().
@@ -287,7 +298,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	get("http://localhost:8080/users/2").
+	    	get("http://localhost:8080/users/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -298,7 +309,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	delete("http://localhost:8080/users/2").
+	    	delete("http://localhost:8080/users/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200);
@@ -306,6 +317,7 @@ public class AppTest {
 	
 	@Test
     public void test_WhenUpdatingThenDeletingBug_ThenFieldIsUpdatedThenRemoved() throws JSONException {
+		
 		Bug bug1 = new Bug();
 		bug1.setId(2);
 		bug1.setDescription("Test Description");
@@ -319,6 +331,11 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/bugs").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		bug1.setId(id);
 		bug1.setDescription("Updated Description");
 		
 		given().
@@ -332,7 +349,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	get("http://localhost:8080/bugs/2").
+	    	get("http://localhost:8080/bugs/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -343,7 +360,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	delete("http://localhost:8080/bugs/2").
+	    	delete("http://localhost:8080/bugs/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200);
@@ -365,6 +382,11 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/reviews").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		review1.setId(id);
 		review1.setStars(2.5);
 		
 		given().
@@ -378,7 +400,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	get("http://localhost:8080/reviews/2").
+	    	get("http://localhost:8080/reviews/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -389,7 +411,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	delete("http://localhost:8080/reviews/2").
+	    	delete("http://localhost:8080/reviews/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200);
@@ -410,6 +432,11 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/suggestions").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		suggestion1.setId(id);
 		suggestion1.setDescription("Updated Description");
 		
 		given().
@@ -423,7 +450,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	get("http://localhost:8080/suggestions/2").
+	    	get("http://localhost:8080/suggestions/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -434,7 +461,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	delete("http://localhost:8080/suggestions/2").
+	    	delete("http://localhost:8080/suggestions/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200);
@@ -456,6 +483,11 @@ public class AppTest {
 	        assertThat().
 	        statusCode(200);
 		
+		List<Integer> ids = given().when().get("http://localhost:8080/games").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		game1.setId(id);
 		game1.setDescription("This is my updated game.");
 		
 		given().
@@ -469,7 +501,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	get("http://localhost:8080/games/2").
+	    	get("http://localhost:8080/games/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200).
@@ -480,7 +512,7 @@ public class AppTest {
 		
 		given().
 	    when().
-	    	delete("http://localhost:8080/games/2").
+	    	delete("http://localhost:8080/games/" + id).
 	    then().
 	        assertThat().
 	        statusCode(200);

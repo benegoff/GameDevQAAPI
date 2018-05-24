@@ -2,18 +2,43 @@ package gamedevqa.models;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="USERS")
 public class User {
 	
+	@Id
+	@Column(name="user_id")
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
+	
+	@Column(unique=true)
 	private String username;
     private String passwordHash;
-    private Role role;
     private String profileImagePath;
     private String biography;
     
+    @ElementCollection
+    private List<String> roles;
+    
+    @OneToMany
     private List<Game> games;
+    
+    @OneToMany
     private List<Review> reviews;
+    
+    @OneToMany
     private List<Suggestion> suggestions;
+    
+    @OneToMany
     private List<Bug> authoredBugs;
     
     public void copy(User source) {
@@ -79,15 +104,15 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public Role getRole() {
-        return role;
-    }
+    public List<String> getRoles() {
+		return roles;
+	}
 
-    public void setRole(Role role) {
-        this.role = role;
-    }
+	public void setRoles(List<String> roles) {
+		this.roles = roles;
+	}
 
-    public String getProfileImagePath() {
+	public String getProfileImagePath() {
         return profileImagePath;
     }
 
