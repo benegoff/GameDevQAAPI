@@ -4,6 +4,12 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,9 +21,8 @@ import gamedevqa.models.Game;
 import gamedevqa.models.Review;
 import gamedevqa.models.Suggestion;
 import gamedevqa.models.User;
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.parsing.Parser;
+import org.junit.Assert;;
 
 public class AppTest {
 	
@@ -516,5 +521,50 @@ public class AppTest {
 	    then().
 	        assertThat().
 	        statusCode(200);
+    }
+	
+	@Test
+    public void test_WhenUpdatingUserProfileImage_ThenImageIsActuallyUploaded() throws JSONException, URISyntaxException, IOException {
+		String username = "User3" + System.currentTimeMillis();
+		User user1 = new User();
+		user1.setId(3);
+		user1.setUsername(username);
+		user1.setPasswordHash("+3$+3");
+		user1.setProfileImagePath("testPath3.png");
+		user1.setBiography("Test Biography 3");
+		
+		given().
+			header("Content-Type", "application/json").
+			body(user1).
+	    when().
+	    	post("http://localhost:8080/users").
+	    then().
+	        assertThat().
+	        statusCode(200);
+		
+		List<Integer> ids = given().when().get("http://localhost:8080/users").then().statusCode(200).extract().response().path("id");
+		ids.sort(Collections.reverseOrder());
+		int id = ids.get(0);
+		
+		user1.setId(id);
+		
+		File image = new File("C:\\Users\\Ben\\OneDrive - Neumont University\\Q11\\Distributed Systems\\Distributed Systems Workspace\\gamedevqa\\src\\test\\java\\gamedevqa\\resources\\testImage.jpg");
+		byte[] localBytes = Files.readAllBytes(Paths.get(image.getAbsolutePath()));
+		
+		given().
+			body(localBytes).
+	    when().
+	    	post("http://localhost:8080/uploads/profileImage/" + id).
+	    then().
+	        assertThat().
+	        statusCode(200);
+		
+		String imageUrl = given().when().get("http://localhost:8080/users/" + id).then().statusCode(200).extract().response().path("profileImagePath");
+		byte[] onlineBytes = Files.readAllBytes(Paths.get(new URI(imageUrl)));
+		
+		Assert.assertEquals(onlineBytes.length, localBytes.length);
+		for(int i = 0; i < onlineBytes.length; i++) {
+			Assert.assertEquals(onlineBytes[i], localBytes[i]);
+		}
     }
 }
