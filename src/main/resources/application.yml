@@ -1,5 +1,5 @@
 amazonProperties:
   endpointUrl: https://s3-us-west-1.amazonaws.com
-  accessKey: AKIAJIBAXUXFEDAQ5CMA
-  secretKey: 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
+  accessKey: AKIAJKCAWIIW3R4JBADQ
+  secretKey: 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
   bucketName: gamedevqa-bucket
